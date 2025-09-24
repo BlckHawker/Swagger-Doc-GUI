@@ -44,7 +44,7 @@
         - object
     - Required (checkbox)
     - Description (text input)
-    - Example (string). Verify this parses to a proper JSON
+    - Example (string). Verify this parses to a proper selected type
   - Examples (optional, repeatable):
     - Example name (string)
       - `existingSection`

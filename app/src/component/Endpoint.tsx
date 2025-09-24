@@ -1,5 +1,6 @@
 import '../main.css'
 import Dropdown from './Dropdown';
+import TextField from './TextField';
 function Endpoint() {
   return (
     
@@ -13,18 +14,15 @@ function Endpoint() {
   name="Methods"
   options={["DELETE", "GET", "PATCH", "POST", "PUT"]}
 />
-<div className="flex-horizontal">
-        <p>Summary:</p>
-        <input type="text" />
-    </div>
-    <div className="flex-horizontal">
-        <p>Description:</p>
-        <input type="text" />
-    </div>
-    <div className="flex-horizontal">
-        <p>Tags:</p>
-        <input type="text" />
-    </div>
+<TextField
+  name="Summary"
+/>
+<TextField
+  name="Description"
+/>
+<TextField
+  name="Tags"
+/>
 </fieldset>
   );
 }
