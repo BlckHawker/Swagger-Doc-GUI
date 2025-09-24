@@ -2,14 +2,17 @@ interface Props {
   name: string;
   value: string[];
   onChange: (value: string[]) => void;
+  required?: boolean
 }
 
-function TagsField({ name, value, onChange }: Props) {
+function TagsField({ name, value, onChange, required }: Props) {
   const id = `${name}-input`;
 
   return (
-    <div>
-      <label htmlFor={id}>{name}</label>
+    <div className="flex-horizontal">
+      <label htmlFor={id}>{name}
+        {required && <span style={{ color: "red" }}> *</span>}
+      </label>
       <input
         type="text"
         id={id}

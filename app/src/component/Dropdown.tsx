@@ -3,16 +3,19 @@ interface Props {
   name: string;
   options: string[];
   value: string;
+  required?: boolean
   onChange: (value: string) => void;
 }
 
-function Dropdown({ name, options, value, onChange }: Props) {
+function Dropdown({ name, options, value, onChange, required }: Props) {
   const inputId = `${name}-input`;
   const listId = `${name}-options`;
 
   return (
     <div className='flex-horizontal'>
-      <label htmlFor={inputId}>{name}</label>
+      <label htmlFor={inputId}>{name}
+        {required && <span style={{ color: "red" }}> *</span>}
+      </label>
       <input
         list={listId}
         id={inputId}

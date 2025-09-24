@@ -17,6 +17,15 @@ function Endpoint({ data, onChange }: Props) {
         name="Path"
         value={data.path}
         onChange={(v: any) => onChange({ ...data, path: v })}
+        required={true}
+      />
+
+      <Dropdown 
+      name={'Method'}
+      options={["GET", "PUT", "POST", "DELETE", "PATCH"]} 
+      value={data.method}
+      onChange={(v: any) => onChange({ ...data, method: v })}
+      required={true}
       />
 <TextField
         name="Summary"
@@ -29,7 +38,6 @@ function Endpoint({ data, onChange }: Props) {
         onChange={(v: any) => onChange({ ...data, description: v })}
       />
       <TagsField name={'Tags'} value={data.tags} onChange={(v) => onChange({ ...data, tags: v })}/>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
 </fieldset>
   );
 }

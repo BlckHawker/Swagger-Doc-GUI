@@ -2,9 +2,12 @@ import { useState } from "react";
 import Parameter from "./Parameter";
 import { ParameterData } from "../interfaces";
 
-function ParameterManager() {
-  const [parameters, setParameters] = useState<ParameterData[]>([]);
+  interface Props {
+    parameters: ParameterData[],
+    setParameters: React.Dispatch<React.SetStateAction<ParameterData[]>>
 
+  }
+function ParameterManager({parameters, setParameters}: Props) {
   const addParameter = () => {
     setParameters([
       ...parameters,
@@ -33,7 +36,6 @@ function ParameterManager() {
           onDelete={() => deleteParameter(index)}
         />
       ))}
-      <pre>{JSON.stringify(parameters, null, 2)}</pre>
       <button onClick={addParameter}>Add Parameter</button>
     </div>
   );
