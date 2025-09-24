@@ -6,6 +6,15 @@ interface ParameterData {
   example: string;
 }
 
+interface EndpointData {
+    path: string,
+    method: string,
+    summary: string,
+    description: string,
+    tags: string[]
+}
+
 export type {
-    ParameterData
+    ParameterData,
+    EndpointData
 }

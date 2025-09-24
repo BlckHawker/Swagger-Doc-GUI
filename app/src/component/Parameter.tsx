@@ -4,15 +4,16 @@ import TextField from "./TextField";
 import { ParameterData } from "../interfaces";
 
 interface Props {
+  index: number,
   data: ParameterData;
   onChange: (data: ParameterData) => void;
   onDelete: () => void;
 }
 
-function Parameter({ data, onChange, onDelete }: Props) {
+function Parameter({ index, data, onChange, onDelete }: Props) {
   return (
     <fieldset>
-      <legend>Parameter</legend>
+      <legend>{"Parameter " + (index + 1)}</legend>
 
       <Dropdown
         name="In"

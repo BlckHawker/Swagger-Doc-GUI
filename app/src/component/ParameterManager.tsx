@@ -26,6 +26,7 @@ function ParameterManager() {
     <div>
       {parameters.map((param, index) => (
         <Parameter
+          index={index}
           key={index}
           data={param}
           onChange={(updated) => updateParameter(index, updated)}
