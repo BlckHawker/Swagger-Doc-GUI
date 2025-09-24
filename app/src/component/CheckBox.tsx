@@ -1,13 +1,21 @@
 import '../main.css'
 interface Props {
-    name: string
-
+  name: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
 }
-function CheckBox({name}: Props) {
+function CheckBox({ name, checked, onChange }: Props) {
+  const id = `${name}-checkbox`;
   return (
-    <div className="flex-horizontal">
-        <p>{name + ":"}</p>
-        <input type="checkbox" />
+    <div>
+      <input
+        type="checkbox"
+        id={id}
+        name={name}
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+      <label htmlFor={id}>{name}</label>
     </div>
   );
 }

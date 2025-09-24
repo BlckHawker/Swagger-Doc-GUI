@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="flex-vertical">
       <Endpoint/>
-      <Parameter/>
+      {/* <Parameter/> */}
       <ParameterManager/>
       <button>Generate</button>
     </div>

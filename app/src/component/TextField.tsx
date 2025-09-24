@@ -1,13 +1,18 @@
-import '../main.css'
 interface Props {
-    name: string
-
+  name: string;
+  value: string;
+  onChange: (value: string) => void;
 }
-function TextField({name}: Props) {
+
+function TextField({ name, value, onChange }: Props) {
   return (
     <div className="flex-horizontal">
-        <p>{name + ":"}</p>
-        <input type="text" />
+      <label>{name}</label>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
     </div>
   );
 }

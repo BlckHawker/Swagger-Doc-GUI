@@ -10,11 +10,11 @@ function Endpoint() {
         <p>Path:</p>
         <input type="text" />
     </div>
-    <Dropdown
+    {/* <Dropdown
   name="Methods"
   options={["DELETE", "GET", "PATCH", "POST", "PUT"]}
-/>
-<TextField
+/> */}
+{/* <TextField
   name="Summary"
 />
 <TextField
@@ -22,7 +22,7 @@ function Endpoint() {
 />
 <TextField
   name="Tags"
-/>
+/> */}
 </fieldset>
   );
 }
