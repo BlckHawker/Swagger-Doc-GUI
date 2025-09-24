@@ -14,3 +14,14 @@
   border: 1px solid gray; 
   padding: 10px; 
 }
+
+fieldset {
+     display: flex;
+  flex-direction: column;
+    gap: 1rem;
+}
+
+legend {
+   
+  text-align: center;
+}
