@@ -7,28 +7,29 @@ interface Props {
   onChange: (value: string) => void;
 }
 
-function Dropdown({ name, options, value, onChange, required }: Props) {
+function AutoCompleteDropdown({ name, options, value, onChange, required }: Props) {
   const inputId = `${name}-input`;
+  const listId = `${name}-options`;
 
   return (
     <div className='flex-horizontal'>
       <label htmlFor={inputId}>{name}
         {required && <span style={{ color: "red" }}> *</span>}
       </label>
-      <select 
+      <input
+        list={listId}
         id={inputId}
         name={name}
         value={value}
-        onChange={(e) => onChange(e.target.value)}>
-          {options.map((opt, idx) => (
-  <option key={idx} value={opt}>
-    {opt}
-  </option>
-))}
-
-    </select>
+        onChange={(e) => onChange(e.target.value)}
+      />
+      <datalist id={listId}>
+        {options.map((opt, idx) => (
+          <option key={idx} value={opt} />
+        ))}
+      </datalist>
     </div>
   );
 }
 
-export default Dropdown;
+export default AutoCompleteDropdown;

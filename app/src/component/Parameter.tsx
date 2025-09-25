@@ -1,7 +1,8 @@
 import CheckBox from "./CheckBox";
-import Dropdown from "./Dropdown";
+import AutoCompleteDropdown from "./AutoCompleteDropdown";
 import TextField from "./TextField";
 import { ParameterData } from "../interfaces";
+import Schema from "./Schema";
 
 interface Props {
   index: number,
@@ -15,18 +16,20 @@ function Parameter({ index, data, onChange, onDelete }: Props) {
     <fieldset>
       <legend>{"Parameter " + (index + 1)}</legend>
 
-      <Dropdown
+      <AutoCompleteDropdown
         name="In"
         options={["path", "query"]}
         value={data.in}
         onChange={(v) => onChange({ ...data, in: v })}
+        required={true}
       />
 
-      <Dropdown
-        name="Type"
-        options={["Array", "Boolean", "Number", "Object", "String"]}
-        value={data.type}
-        onChange={(v) => onChange({ ...data, type: v })}
+      <TextField
+        name="Name"
+        value={data.name}
+        onChange={(v: any) => onChange({ ...data, name: v })}
+        required={true}
+
       />
 
       <CheckBox
@@ -40,6 +43,8 @@ function Parameter({ index, data, onChange, onDelete }: Props) {
         value={data.description}
         onChange={(v: any) => onChange({ ...data, description: v })}
       />
+
+      <Schema/>
 
       <TextField
         name="Example"

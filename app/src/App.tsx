@@ -22,7 +22,6 @@ function App() {
       <pre>{JSON.stringify(endpointData, null, 2)}</pre>
       <p>Parameters</p>
       <pre>{JSON.stringify(parametersData, null, 2)}</pre>
-      <pre></pre>
     </div>
   );
 

@@ -11,7 +11,7 @@ function ParameterManager({parameters, setParameters}: Props) {
   const addParameter = () => {
     setParameters([
       ...parameters,
-      { in: "", type: "", required: false, description: "", example: "" },
+      { in: "", name: "", type: "", required: false, description: "", example: "" },
     ]);
   };
 

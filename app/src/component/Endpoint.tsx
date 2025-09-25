@@ -1,5 +1,5 @@
 import '../main.css'
-import Dropdown from './Dropdown';
+import AutoCompleteDropdown from './AutoCompleteDropdown';
 import TextField from './TextField';
 import {EndpointData} from '../interfaces'
 import TagsField from './TagsField';
@@ -20,7 +20,7 @@ function Endpoint({ data, onChange }: Props) {
         required={true}
       />
 
-      <Dropdown 
+      <AutoCompleteDropdown 
       name={'Method'}
       options={["GET", "PUT", "POST", "DELETE", "PATCH"]} 
       value={data.method}

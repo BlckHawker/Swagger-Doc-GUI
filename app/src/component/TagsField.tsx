@@ -17,13 +17,10 @@ function TagsField({ name, value, onChange, required }: Props) {
         type="text"
         id={id}
         name={name}
-        value={value.join(", ")} // show tags as comma-separated string
+        value={value.join(",")} // show tags as comma-separated string
         onChange={(e) => {
-          // split by comma, trim whitespace, filter out empty strings
           const tags = e.target.value
             .split(",")
-            .map((t) => t.trim())
-            .filter((t) => t.length > 0);
           onChange(tags);
         }}
       />
