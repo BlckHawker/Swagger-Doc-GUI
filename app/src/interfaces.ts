@@ -12,7 +12,7 @@ type SchemaType =
       type: "string"
       format?: string
       enum?: string[]
-      pattern?: RegExp
+      pattern?: string
       minLength?: number
       maxLength?: number
     }
@@ -29,7 +29,7 @@ type SchemaType =
     }
   | {
       type: "array"
-      items: SchemaType[]
+      items: string,
       minItems?: number
       maxItems?: number
       uniqueItems?: boolean
