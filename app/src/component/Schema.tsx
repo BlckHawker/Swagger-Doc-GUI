@@ -2,6 +2,7 @@ import {SchemaType} from "../interfaces"
 import { useState } from "react";
 import Dropdown from "./Dropdown";
 import TextField from "./TextField";
+import TagsField from "./TagsField";
 function Schema() {
     const [schemaType, setSchemaType] = useState<SchemaType>({
     type: "string",
@@ -24,13 +25,21 @@ function Schema() {
         <TextField 
         name="format"
         value={schemaType.format ?? ""}
-        onChange={(value) =>
+        onChange={(v) =>
             setSchemaType(prev => ({
             ...prev,
-            format: value
+            format: v
             }))
   }
-/>
+        /> &&
+        <TagsField 
+        name={"enum"} 
+        value={schemaType.enum ?? []} 
+        onChange={(v) => setSchemaType(prev => ({
+            ...prev,
+            enum: v
+            }))}
+        />
        }
       <pre>{JSON.stringify(schemaType, null, 2)}</pre>
         </fieldset>
