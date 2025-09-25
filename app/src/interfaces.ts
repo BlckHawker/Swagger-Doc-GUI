@@ -37,8 +37,6 @@ type SchemaType =
   | {
       type: "object"
       properties: Record<string, SchemaType>
-      required?: string[]
-      additionalProperties?: boolean | SchemaType
     }
 
 

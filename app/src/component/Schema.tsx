@@ -188,6 +188,8 @@ function Schema() {
             
         </>
       }
+
+        {schemaType.type === "object" && <p>To be implemented</p>}
       
 
       
