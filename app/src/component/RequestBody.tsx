@@ -17,9 +17,15 @@ function RequestBody() {
     <>
     <fieldset>
       <legend>{"Request Body"}</legend>
+      <CheckBox 
+      name={"Required"} 
+      checked={requestBodyData!.required} 
+      onChange={(v: any) => setRequestBodyData({ ...requestBodyData!, required: v })}
+      required={true}
+      />
       <TextField 
       name={"Description"} 
-      value={requestBodyData?.description ?? ""} 
+      value={requestBodyData!.description ?? ""} 
       onChange={(v: any) => setRequestBodyData({ ...requestBodyData!, description: v })}/>
     <button onClick={() => {setShowComponent(false); setRequestBodyData(null); }}>Remove Request Body</button>
      <pre>{JSON.stringify(requestBodyData, null, 2)}</pre>
