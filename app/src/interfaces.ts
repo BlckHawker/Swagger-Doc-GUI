@@ -34,10 +34,6 @@ type SchemaType =
       maxItems?: number
       uniqueItems?: boolean
     }
-  | {
-      type: "object"
-      properties: Record<string, SchemaType>
-    }
 
 
 interface EndpointData {

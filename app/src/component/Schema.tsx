@@ -76,123 +76,123 @@ function Schema() {
 
       {(schemaType.type === "number" || schemaType.type === "integer") &&
         <>
-        <TextField
-              name="minimum"
-              value={schemaType.minimum?.toString() ?? ""}
-              onChange={(v) =>
-                setSchemaType(prev => ({
-                  ...prev,
-                  minimum: v === "" ? undefined : Number(v)
-                }))
-              }
-              type="number"
-            />
+          <TextField
+            name="minimum"
+            value={schemaType.minimum?.toString() ?? ""}
+            onChange={(v) =>
+              setSchemaType(prev => ({
+                ...prev,
+                minimum: v === "" ? undefined : Number(v)
+              }))
+            }
+            type="number"
+          />
 
-            <TextField
-              name="maximum"
-              value={schemaType.maximum?.toString() ?? ""}
-              onChange={(v) =>
-                setSchemaType(prev => ({
-                  ...prev,
-                  maximum: v === "" ? undefined : Number(v)
-                }))
-              }
-              type="number"
-            />
+          <TextField
+            name="maximum"
+            value={schemaType.maximum?.toString() ?? ""}
+            onChange={(v) =>
+              setSchemaType(prev => ({
+                ...prev,
+                maximum: v === "" ? undefined : Number(v)
+              }))
+            }
+            type="number"
+          />
 
-            <TextField
-              name="exclusiveMinimum"
-              value={schemaType.exclusiveMinimum?.toString() ?? ""}
-              onChange={(v) =>
-                setSchemaType(prev => ({
-                  ...prev,
-                  exclusiveMinimum: v === "" ? undefined : Number(v)
-                }))
-              }
-              type="number"
-            />
+          <TextField
+            name="exclusiveMinimum"
+            value={schemaType.exclusiveMinimum?.toString() ?? ""}
+            onChange={(v) =>
+              setSchemaType(prev => ({
+                ...prev,
+                exclusiveMinimum: v === "" ? undefined : Number(v)
+              }))
+            }
+            type="number"
+          />
 
-            <TextField
-              name="exclusiveMaximum"
-              value={schemaType.exclusiveMaximum?.toString() ?? ""}
-              onChange={(v) =>
-                setSchemaType(prev => ({
-                  ...prev,
-                  exclusiveMaximum: v === "" ? undefined : Number(v)
-                }))
-              }
-              type="number"
-            />
+          <TextField
+            name="exclusiveMaximum"
+            value={schemaType.exclusiveMaximum?.toString() ?? ""}
+            onChange={(v) =>
+              setSchemaType(prev => ({
+                ...prev,
+                exclusiveMaximum: v === "" ? undefined : Number(v)
+              }))
+            }
+            type="number"
+          />
 
-            <TextField
-              name="multipleOf"
-              value={schemaType.multipleOf?.toString() ?? ""}
-              onChange={(v) =>
-                setSchemaType(prev => ({
-                  ...prev,
-                  multipleOf: v === "" ? undefined : Number(v)
-                }))
-              }
-              type="number"
-            />
+          <TextField
+            name="multipleOf"
+            value={schemaType.multipleOf?.toString() ?? ""}
+            onChange={(v) =>
+              setSchemaType(prev => ({
+                ...prev,
+                multipleOf: v === "" ? undefined : Number(v)
+              }))
+            }
+            type="number"
+          />
         </>
       }
 
-      {schemaType.type === "array" && 
+      {schemaType.type === "array" &&
         <>
-        <Dropdown
-        name="items"
-        options={["string", "number", "integer", "boolean", "object"]}
-        value={schemaType.items}
-        onChange={(v) =>
-          setSchemaType(prev => ({
-                  ...prev,
-                  items: v
-                }))
-        }
-        required={true}
-      />
-      <TextField
-              name="minItems"
-              value={schemaType.minItems?.toString() ?? ""}
-              onChange={(v) =>
-                setSchemaType(prev => ({
-                  ...prev,
-                  minItems: v === "" ? undefined : Number(v)
-                }))
-              }
-              type="number"
-            />
-            <TextField
-              name="maxItems"
-              value={schemaType.maxItems?.toString() ?? ""}
-              onChange={(v) =>
-                setSchemaType(prev => ({
-                  ...prev,
-                  maxItems: v === "" ? undefined : Number(v)
-                }))
-              }
-              type="number"
-            />
-            <CheckBox
-        name="uniqueItems"
-        checked={schemaType.uniqueItems ?? false}
-        onChange={(v: any) =>
-                setSchemaType(prev => ({
-                  ...prev,
-                  uniqueItems: v
-                }))
-              }
-      />
+          <Dropdown
+            name="items"
+            options={["string", "number", "integer", "boolean"]}
+            value={schemaType.items}
+            onChange={(v) =>
+              setSchemaType(prev => ({
+                ...prev,
+                items: v
+              }))
+            }
+            required={true}
+          />
+          <TextField
+            name="minItems"
+            value={schemaType.minItems?.toString() ?? ""}
+            onChange={(v) =>
+              setSchemaType(prev => ({
+                ...prev,
+                minItems: v === "" ? undefined : Number(v)
+              }))
+            }
+            type="number"
+          />
+          <TextField
+            name="maxItems"
+            value={schemaType.maxItems?.toString() ?? ""}
+            onChange={(v) =>
+              setSchemaType(prev => ({
+                ...prev,
+                maxItems: v === "" ? undefined : Number(v)
+              }))
+            }
+            type="number"
+          />
+          <CheckBox
+            name="uniqueItems"
+            checked={schemaType.uniqueItems ?? false}
+            onChange={(v: any) =>
+              setSchemaType(prev => ({
+                ...prev,
+                uniqueItems: v
+              }))
+            }
+          />
 
-            
+
         </>
       }
 
-        {schemaType.type === "object" && <p>To be implemented</p>}
-      
 
-      
+
+
+
       <pre>{JSON.stringify(schemaType, null, 2)}</pre>
     </fieldset>
 
@@ -213,8 +213,6 @@ const changeSchemaType = (type: SchemaType["type"]): SchemaType => {
       return { type: "boolean" }
     case "array":
       return { type: "array", items: "string" }
-    case "object":
-      return { type: "object", properties: {} }
     default:
       return { type: "string" }
   }
