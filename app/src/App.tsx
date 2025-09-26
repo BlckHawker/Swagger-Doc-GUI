@@ -3,6 +3,7 @@ import ParameterManager from "./component/ParameterManager";
 import './main.css'
 import { EndpointData, ParameterData } from "./interfaces";
 import { SetStateAction, useState } from "react";
+import RequestBody from "./component/RequestBody";
 
 function App() {
   const [endpointData, setEndpointData] = useState<EndpointData>({path: "",
@@ -17,6 +18,7 @@ function App() {
     <div className="flex-vertical">
       <Endpoint data={endpointData} onChange={(updated: EndpointData) => setEndpointData(updated)} />
       <ParameterManager parameters={parametersData} setParameters={setParametersData}/>
+      <RequestBody/>
       <button>Generate</button>
       <p>Endpoint</p>
       <pre>{JSON.stringify(endpointData, null, 2)}</pre>

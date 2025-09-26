@@ -44,7 +44,20 @@ interface EndpointData {
     tags: string[]
 }
 
+interface RequestBodyData {
+  description?: string;
+  required: boolean;
+  content: {
+    [mimeType: string]: {
+      schema: SchemaType;
+      example?: unknown;
+      examples?: Record<string, unknown>;
+    };
+  };
+}
+
 export type {
+    RequestBodyData,
     SchemaType,
     ParameterData,
     EndpointData
