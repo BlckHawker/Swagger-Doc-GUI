@@ -213,6 +213,8 @@ const changeSchemaType = (type: SchemaType["type"]): SchemaType => {
       return { type: "boolean" }
     case "array":
       return { type: "array", items: "string" }
+    case "object":
+      return { type: "object", properties: {} }
     default:
       return { type: "string" }
   }
