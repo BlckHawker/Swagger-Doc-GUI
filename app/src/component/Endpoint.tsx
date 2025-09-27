@@ -4,10 +4,11 @@ import TextField from './TextField';
 import {EndpointData} from '../interfaces'
 import TagsField from './TagsField';
 interface Props {
+  methodOptions: string[]
   data: EndpointData;
   onChange: (data: EndpointData) => void;
 }
-function Endpoint({ data, onChange }: Props) {
+function Endpoint({ data, onChange, methodOptions }: Props) {
   return (
     
     <fieldset >
@@ -22,7 +23,7 @@ function Endpoint({ data, onChange }: Props) {
 
       <AutoCompleteDropdown 
       name={'Method'}
-      options={["GET", "PUT", "POST", "DELETE", "PATCH"]} 
+      options={methodOptions} 
       value={data.method}
       onChange={(v: any) => onChange({ ...data, method: v })}
       required={true}
