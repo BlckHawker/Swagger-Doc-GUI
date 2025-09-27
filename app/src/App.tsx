@@ -7,6 +7,7 @@ import RequestBody from "./component/RequestBody";
 
 function App() {
   const methodOptions = ["GET", "PUT", "POST", "DELETE", "PATCH"];
+  const inOptions = ["path", "query"]
   const [endpointData, setEndpointData] = useState<EndpointData>({path: "",
     method: "",
     summary: "",
@@ -15,11 +16,13 @@ function App() {
 
   const [parametersData, setParametersData] = useState<ParameterData[]>([]);
   const [endpointErrors, setEndpointErrors] = useState<string[]>([]);
+  const [parameterErrors, setParameterErrors] = useState<string[]>([]);
+
 
   return (
     <div className="flex-vertical">
       <Endpoint methodOptions={methodOptions} data={endpointData} onChange={(updated: EndpointData) => setEndpointData(updated)} />
-      <ParameterManager parameters={parametersData} setParameters={setParametersData}/>
+      <ParameterManager parameters={parametersData} setParameters={setParametersData} inOptions={inOptions}/>
       <RequestBody/>
       <button onClick={() => validateData()}>Generate</button>
       <p>Endpoint</p>
@@ -29,6 +32,8 @@ function App() {
 
       <>
       {renderErrorList("endpoint", endpointErrors)}
+      {renderErrorList("parameters", parameterErrors)}
+
       </>
 
     </div>
@@ -36,6 +41,7 @@ function App() {
 
   function validateData () {
     validateEndpoint();
+    validateParameters();
   }
 
   function validateEndpoint () {
@@ -44,12 +50,38 @@ function App() {
     if(!endpointData.path.trim()) {
       errors.push("path can't be empty")
     }
-    //method can't be empty (and must be one of the valid strings)
+
     const method = endpointData.method.trim();
     if(!methodOptions.includes(method.toUpperCase())) {
       errors.push(`"${method}" is not a valid method`)
     }
     setEndpointErrors(errors);
+  }
+
+  function validateParameters() {
+
+    const errors=[];
+    for(let i = 0; i < parametersData.length; i++) {
+      const parameter = parametersData[i];
+      const pStr = `in parameter ${i + 1}`
+    const inValue = parameter.in.trim();
+
+    if(!inOptions.includes(inValue.toLocaleLowerCase())) {
+      errors.push(`"${inValue}" is not a valid in ${pStr}`)
+
+    }
+
+    if(!parameter.name.trim()) {
+      errors.push(`name can't be empty ${pStr}`)
+    }
+
+
+    }
+
+    setParameterErrors(errors);
+
+    
+    
   }
 
     function renderErrorList(name: string, errors: string[]) {

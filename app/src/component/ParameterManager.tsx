@@ -3,11 +3,12 @@ import Parameter from "./Parameter";
 import { ParameterData } from "../interfaces";
 
   interface Props {
+    inOptions: string[]
     parameters: ParameterData[],
     setParameters: React.Dispatch<React.SetStateAction<ParameterData[]>>
 
   }
-function ParameterManager({parameters, setParameters}: Props) {
+function ParameterManager({parameters, setParameters, inOptions}: Props) {
   const addParameter = () => {
     setParameters([
       ...parameters,
@@ -33,8 +34,7 @@ function ParameterManager({parameters, setParameters}: Props) {
           key={index}
           data={param}
           onChange={(updated) => updateParameter(index, updated)}
-          onDelete={() => deleteParameter(index)}
-        />
+          onDelete={() => deleteParameter(index)} inOptions={inOptions}        />
       ))}
       <button onClick={addParameter}>Add Parameter</button>
     </div>

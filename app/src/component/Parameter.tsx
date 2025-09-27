@@ -5,20 +5,21 @@ import { ParameterData } from "../interfaces";
 import Schema from "./Schema";
 
 interface Props {
+  inOptions: string[]
   index: number,
   data: ParameterData;
   onChange: (data: ParameterData) => void;
   onDelete: () => void;
 }
 
-function Parameter({ index, data, onChange, onDelete }: Props) {
+function Parameter({ index, data, onChange, onDelete, inOptions }: Props) {
   return (
     <fieldset>
       <legend>{"Parameter " + (index + 1)}</legend>
 
       <AutoCompleteDropdown
         name="In"
-        options={["path", "query"]}
+        options={inOptions}
         value={data.in}
         onChange={(v) => onChange({ ...data, in: v })}
         required={true}
