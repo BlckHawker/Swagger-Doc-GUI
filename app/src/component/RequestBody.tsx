@@ -74,46 +74,83 @@ function RequestBody() {
 
   // Updates requestBodyData with new property array
   function updateRequestBodyWithProperties(
-    requestBodyData: RequestBodyData | null,
-    newProps: PropertyData[]
-  ): RequestBodyData | null {
-    if (!requestBodyData) return requestBodyData;
-    const contentType = selectedContentType;
-    if (!contentType) return requestBodyData;
+  requestBodyData: RequestBodyData | null,
+  newProps: PropertyData[]
+): RequestBodyData | null {
+  if (!requestBodyData) return requestBodyData;
+  const contentType = selectedContentType;
+  if (!contentType) return requestBodyData;
 
-    return {
-      ...requestBodyData,
-      content: {
-        ...requestBodyData.content,
-        [contentType]: {
-          ...requestBodyData.content[contentType],
-          schema: {
-            type: "object",
-            properties: propertyArrayToObject(newProps),
-          },
-        },
-      },
-    };
+  const propertiesObj = propertyArrayToObject(newProps);
+  const requiredNames = newProps.filter(p => p.required).map(p => p.name);
+
+  const newSchema: any = {
+    type: "object",
+    properties: propertiesObj,
+  };
+
+  if (requiredNames.length > 0) {
+    newSchema.required = requiredNames;
   }
+
+  return {
+    ...requestBodyData,
+    content: {
+      ...requestBodyData.content,
+      [contentType]: {
+        ...requestBodyData.content[contentType],
+        schema: newSchema as SchemaType,
+      },
+    },
+  };
 }
 
-// Converts PropertyData[] → object keyed by name
+}
+
+// Converts PropertyData[] -> Record<string, SchemaType>
+// preserves description, deprecated, readOnly, writeOnly, example by copying them into the property schema
 const propertyArrayToObject = (properties: PropertyData[]): Record<string, SchemaType> => {
   return properties.reduce((acc, prop) => {
-    acc[prop.name] = prop.schema;
+    const { name, schema, description, example, deprecated, readOnly, writeOnly } = prop;
+
+    // Merge metadata into the schema object so it persists in OpenAPI format
+    const merged = {
+      ...schema,
+      // only add the optional fields if present
+      ...(description !== undefined ? { description } : {}),
+      ...(example !== undefined ? { example } : {}),
+      ...(deprecated !== undefined ? { deprecated } : {}),
+      ...(readOnly !== undefined ? { readOnly } : {}),
+      ...(writeOnly !== undefined ? { writeOnly } : {}),
+    };
+
+    acc[name] = merged as SchemaType;
     return acc;
   }, {} as Record<string, SchemaType>);
-}
-
-// Converts object keyed by property name → PropertyData[]
-const propertyObjectToArray = (obj: Record<string, SchemaType>): PropertyData[] => {
-  return Object.entries(obj).map(([name, schema]) => ({
-    name,
-    schema,
-  }));
 };
 
-// get properties array from requestBodyData
+// Converts Record<string, SchemaType> -> PropertyData[]
+// reads metadata out of each property schema and uses the parent's required list for per-property required flag
+const propertyObjectToArray = (
+  obj: Record<string, SchemaType>,
+  requiredList: string[] = []
+): PropertyData[] => {
+  return Object.entries(obj).map(([name, schema]) => {
+    const s = schema as any; // use any to access metadata fields that your union might not list
+    return {
+      name,
+      schema,
+      required: requiredList.includes(name),
+      description: s.description,
+      example: s.example,
+      deprecated: s.deprecated,
+      readOnly: s.readOnly,
+      writeOnly: s.writeOnly,
+    } as PropertyData;
+  });
+};
+
+// Safe getter: returns PropertyData[] from requestBodyData if schema exists and is an object
 function getSchemaPropertiesArray(
   requestBodyData: RequestBodyData | null,
   selectedContentType: string | null
@@ -125,11 +162,15 @@ function getSchemaPropertiesArray(
 
   const schema = requestBodyData.content[selectedContentType].schema;
 
-  // Type narrowing: only proceed if schema is an object
+  // Narrow to object
   if (schema.type !== "object" || !("properties" in schema)) return [];
 
-  return propertyObjectToArray(schema.properties);
+  const propsObj = (schema as any).properties as Record<string, SchemaType>;
+  const requiredList = (schema as any).required ?? [];
+
+  return propertyObjectToArray(propsObj, requiredList);
 }
+
 
 
 
