@@ -13,10 +13,12 @@ interface Props {
 
 function PropertyManager({properties, setProperties, contentType}: Props) {
   const addProperty = () => {
-    setProperties([
+    const newProperties = [
       ...properties,
-      { name: "", schema: { type: "string" } },
-    ]);
+      { name: "", schema: { type: "string" } } as PropertyData,
+    ]
+    console.log(newProperties)
+    setProperties(newProperties);
   };
 
   const updateProperty = (index: number, updated: PropertyData) => {
@@ -30,7 +32,7 @@ function PropertyManager({properties, setProperties, contentType}: Props) {
   };
 
   return (
-    <div>
+    <>
       {properties.map((prop, index) => (
         <Property
           index={index}
@@ -43,7 +45,7 @@ function PropertyManager({properties, setProperties, contentType}: Props) {
 
       {}
       <button hidden={contentType === ""} onClick={addProperty}>Add Property</button>
-    </div>
+    </>
   );
 }
 

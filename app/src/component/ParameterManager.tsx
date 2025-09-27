@@ -27,7 +27,7 @@ function ParameterManager({parameters, setParameters, inOptions}: Props) {
   };
 
   return (
-    <div>
+    <>
       {parameters.map((param, index) => (
         <Parameter
           index={index}
@@ -37,7 +37,7 @@ function ParameterManager({parameters, setParameters, inOptions}: Props) {
           onDelete={() => deleteParameter(index)} inOptions={inOptions}        />
       ))}
       <button onClick={addParameter}>Add Parameter</button>
-    </div>
+    </>
   );
 }
 
