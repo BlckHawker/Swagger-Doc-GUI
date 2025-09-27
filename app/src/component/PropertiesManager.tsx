@@ -8,9 +8,10 @@ const schemaTypes = ["string", "number", "integer", "boolean", "array", "object"
 interface Props {
   properties: PropertyData[];
   setProperties: (props: PropertyData[]) => void;
+  contentType: string
 }
 
-function PropertyManager({properties, setProperties}: Props) {
+function PropertyManager({properties, setProperties, contentType}: Props) {
   const addProperty = () => {
     setProperties([
       ...properties,
@@ -40,8 +41,8 @@ function PropertyManager({properties, setProperties}: Props) {
         />
       ))}
 
-      
-      <button onClick={addProperty}>Add Property</button>
+      {}
+      <button hidden={contentType === ""} onClick={addProperty}>Add Property</button>
     </div>
   );
 }

@@ -53,6 +53,7 @@ function RequestBody() {
                     setProperties={(newProps) =>
                       setRequestBodyData((prev) => updateRequestBodyWithProperties(prev, newProps))
                     }
+                    contentType={selectedContentType ?? ""}
                   />
                 </>
                 :
