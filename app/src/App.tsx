@@ -6,6 +6,7 @@ import { SetStateAction, useState } from "react";
 import RequestBody from "./component/RequestBody";
 
 function App() {
+  const debug = false;
   const methodOptions = ["GET", "PUT", "POST", "DELETE", "PATCH"];
   const inOptions = ["path", "query"]
   const [endpointData, setEndpointData] = useState<EndpointData>({
@@ -28,23 +29,24 @@ function App() {
     <div className="flex-vertical">
       <Endpoint methodOptions={methodOptions} data={endpointData} onChange={(updated: EndpointData) => setEndpointData(updated)} />
       <ParameterManager parameters={parametersData} setParameters={setParametersData} inOptions={inOptions} />
-      <RequestBody requestBodyData={requestBodyData} setRequestBodyData={setRequestBodyData}  />
+      <RequestBody requestBodyData={requestBodyData} setRequestBodyData={setRequestBodyData} />
       <button onClick={() => validateData()}>Generate</button>
-      <p>Endpoint</p>
-      <pre>{JSON.stringify(endpointData, null, 2)}</pre>
-      <p>Parameters</p>
-      <pre>{JSON.stringify(parametersData, null, 2)}</pre>
-      <p>Request Body</p>
-      <pre>{JSON.stringify(requestBodyData, null, 2)}</pre>
-
+      
+      {debug &&
+        <>
+        <p>Endpoint</p>
+          <pre>{JSON.stringify(endpointData, null, 2)}</pre>
+          <p>Parameters</p>
+          <pre>{JSON.stringify(parametersData, null, 2)}</pre>
+          <p>Request Body</p>
+          <pre>{JSON.stringify(requestBodyData, null, 2)}</pre>
+        </>
+      }
       <>
         {renderErrorList("endpoint", endpointErrors)}
         {renderErrorList("parameters", parameterErrors)}
         {renderErrorList("request body", requestBodyErrors)}
-
-
       </>
-
     </div>
   );
 
@@ -93,47 +95,36 @@ function App() {
 
   function validateRequestBodyParameters() {
     const errors: string[] = [];
-    if(!requestBodyData)  { 
+    console.log(requestBodyData)
+    if (!requestBodyData) {
+      console.log("requestBodyData is falsy")
       setRequestBodyErrors(errors);
       return;
     }
 
-    if(!requestBodyData["content"]) {
+    if (!requestBodyData["content"]) {
+      console.log("requestBodyData content is falsy")
+
       setRequestBodyErrors(errors);
       return;
     }
     const content = requestBodyData.content;
-    const schema = content[Object.keys(content)[0]] as unknown as SchemaType;
+    const schema = content[Object.keys(content)[0]]!.schema;
 
-    switch(schema.type) {
+    switch (schema.type) {
       case "object":
         const properties = schema["properties"];
-        const required = schema["required"] ?? null;
-        const additionalProperties = schema["additionalProperties"] ?? null;
 
-        console.log(properties);
-        console.log(required);
-        console.log(additionalProperties);
+        Object.entries(properties).forEach(([key], index) => {
+          index = index + 1
+          const propStr = `in property ${index}`;
+
+          if (!key) {
+            errors.push(`Cannot have a blank name ${propStr}`);
+          }
+
+        });
         break;
-    }
-
-    return;
-
-    for (let i = 0; i < parametersData.length; i++) {
-      const parameter = parametersData[i];
-      const pStr = `in property ${i + 1}`
-      const inValue = parameter.in.trim();
-
-      if (!inOptions.includes(inValue.toLocaleLowerCase())) {
-        errors.push(`"${inValue}" is not a valid in ${pStr}`)
-
-      }
-
-      if (!parameter.name.trim()) {
-        errors.push(`name can't be empty ${pStr}`)
-      }
-
-
     }
 
     setRequestBodyErrors(errors);
@@ -158,7 +149,7 @@ function App() {
     );
   }
 
-  
+
 
 
 

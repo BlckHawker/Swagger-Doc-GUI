@@ -45,7 +45,7 @@ function Property({ index, data, onChange, onDelete }: Props) {
             />
 
             <CheckBox
-                name="write Only"
+                name="Write Only"
                 checked={data.writeOnly ?? false}
                 onChange={(v) => onChange({ ...data, writeOnly: v })}
             />
