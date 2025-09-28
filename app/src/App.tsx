@@ -33,12 +33,12 @@ function App() {
       <Endpoint methodOptions={methodOptions} data={endpoint} onChange={(updated: EndpointData) => setEndpoint(updated)} />
       <ParameterManager parameters={parameters} setParameters={setParameters} inOptions={inOptions} />
       <RequestBody requestBodyData={requestBody} setRequestBodyData={setRequestBody} />
-      <ResponseManager responses={responses} setResponses={setResponses}/>
+      <ResponseManager responses={responses} setResponses={setResponses} />
       <button onClick={() => validateData()}>Generate</button>
-      
+
       {debug &&
         <>
-        <p>Endpoint</p>
+          <p>Endpoint</p>
           <pre>{JSON.stringify(endpoint, null, 2)}</pre>
           <p>Parameters</p>
           <pre>{JSON.stringify(parameters, null, 2)}</pre>
@@ -62,6 +62,7 @@ function App() {
     validateEndpoint();
     validateParameters();
     validateRequestBodyParameters();
+    validateResponses();
   }
 
   function validateEndpoint() {
@@ -136,6 +137,35 @@ function App() {
     }
 
     setRequestBodyErrors(errors);
+  }
+
+  function validateResponses() {
+    const errors:string[] = [];
+    const statusCodes: Record<number, number[]> = [];
+    for (let i = 0; i < responses.length; i++) {
+      const index = i + 1;
+      const response = responses[i];
+      const statusCode = response.statusCode;
+
+      if (!statusCodes[statusCode]) {
+        statusCodes[statusCode] = [index];
+      }
+
+      else {
+        statusCodes[statusCode].push(index);
+      }
+    }
+
+
+    const duplicateStatusCodes: Record<number, number[]> = Object.fromEntries(
+      Object.entries(statusCodes).filter(([_, value]) => value.length >= 2)
+    ) as Record<number, number[]>;
+
+    Object.entries(duplicateStatusCodes).forEach(([key, value]) => {
+      errors.push(`Responses: ${value.join(", ")} cannot have the same status code: ${key}`)
+    });
+
+    setResponseErrors(errors)
   }
 
   function renderErrorList(name: string, errors: string[]) {
