@@ -59,13 +59,22 @@ function App() {
   );
 
   function validateData() {
-    validateEndpoint();
-    validateParameters();
-    validateRequestBodyParameters();
-    validateResponses();
+    const newEndpointErrors = validateEndpoint();
+    const newParameterErrors = validateParameters();
+    const newRequestBodyErrors = validateRequestBodyParameters();
+    const newResponseErrors = validateResponses();
+
+
+    setEndpointErrors(newEndpointErrors)
+    setParameterErrors(newParameterErrors)
+    setRequestBodyErrors(newRequestBodyErrors)
+    setResponseErrors(newResponseErrors);
+
+    const allErrors = [newEndpointErrors, newParameterErrors, newRequestBodyErrors, newResponseErrors].flatMap(arr => arr)
+    return allErrors.length == 0;
   }
 
-  function validateEndpoint() {
+  function validateEndpoint():string[] {
     const errors = [];
 
     if (!endpoint.path.trim()) {
@@ -76,10 +85,10 @@ function App() {
     if (!methodOptions.includes(method.toUpperCase())) {
       errors.push(`"${method}" is not a valid method`)
     }
-    setEndpointErrors(errors);
+    return errors;
   }
 
-  function validateParameters() {
+  function validateParameters():string[] {
 
     const errors = [];
     for (let i = 0; i < parameters.length; i++) {
@@ -99,23 +108,20 @@ function App() {
 
     }
 
-    setParameterErrors(errors);
+    return errors;
   }
 
-  function validateRequestBodyParameters() {
+  function validateRequestBodyParameters():string[] {
     const errors: string[] = [];
     console.log(requestBody)
     if (!requestBody) {
       console.log("requestBodyData is falsy")
-      setRequestBodyErrors(errors);
-      return;
+      return errors;
     }
 
     if (!requestBody["content"]) {
       console.log("requestBodyData content is falsy")
-
-      setRequestBodyErrors(errors);
-      return;
+      return errors;
     }
     const content = requestBody.content;
     const schema = content[Object.keys(content)[0]]!.schema;
@@ -136,16 +142,20 @@ function App() {
         break;
     }
 
-    setRequestBodyErrors(errors);
+    return errors;
   }
 
-  function validateResponses() {
+  function validateResponses():string[] {
     const errors:string[] = [];
     const statusCodes: Record<number, number[]> = [];
     for (let i = 0; i < responses.length; i++) {
       const index = i + 1;
       const response = responses[i];
       const statusCode = response.statusCode;
+      
+      if(response.description.trim() == "") {
+        errors.push(`Response ${index} cannot have an empty description`)
+      }
 
       if (!statusCodes[statusCode]) {
         statusCodes[statusCode] = [index];
@@ -165,7 +175,7 @@ function App() {
       errors.push(`Responses: ${value.join(", ")} cannot have the same status code: ${key}`)
     });
 
-    setResponseErrors(errors)
+    return errors;
   }
 
   function renderErrorList(name: string, errors: string[]) {
