@@ -2,6 +2,7 @@ import CheckBox from "./CheckBox";
 import TextField from "./TextField";
 import { PropertyData, ResponseData } from "../interfaces";
 import Dropdown from "./Dropdown";
+import { useState } from "react";
 
 interface Props {
     httpStatusDescriptions: Record<number, string>
@@ -12,6 +13,7 @@ interface Props {
 }
 
 function Response({ index, data, onChange, onDelete, httpStatusDescriptions }: Props) {
+    const [selectedContentType, setSelectedContentType] = useState<string | null>(null);
     return (
         <fieldset>
             <legend>{"Response " + (index + 1)}</legend>
@@ -31,6 +33,18 @@ function Response({ index, data, onChange, onDelete, httpStatusDescriptions }: P
                 required={true}
             />
 
+            <fieldset>
+              <legend>Content</legend>
+              <Dropdown
+                name={"Content Type"}
+                options={["", "application/json"]}
+                value={selectedContentType ?? ""}
+                onChange={(v) => {
+                  setSelectedContentType(v);
+                  updateResponseContentType(v, data, onChange);
+                }} />
+            </fieldset>
+
             <button type="button" onClick={onDelete}>
                 Delete Response
             </button>
@@ -46,5 +60,27 @@ function getStatusCodeOptions(httpStatusDescriptions: Record<number, string>) {
 
     return arr;
 }
+
+const updateResponseContentType = (
+  selectedType: string,
+  response: ResponseData,
+  onChange: (updated: ResponseData) => void
+) => {
+  if (selectedType === "") {
+    // User cleared selection → remove content
+    onChange({ ...response, content: {} });
+  } else {
+    // Ensure schema exists for the selected content type
+    onChange({
+      ...response,
+      content: {
+        ...response.content,
+        [selectedType]: response.content?.[selectedType] ?? {
+          schema: { type: "object", properties: {} },
+        },
+      },
+    });
+  }
+};
 
 export default Response;

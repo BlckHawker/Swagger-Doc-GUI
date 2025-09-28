@@ -9,7 +9,13 @@ interface ParameterData {
 
 interface ResponseData {
   statusCode: number,
-  description: string
+  description: string,
+  content?: {
+    [mimeType: string]: {
+      schema: SchemaType;
+      example?: unknown;
+    };
+  };
 }
 
 type SchemaType =
