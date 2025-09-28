@@ -2,13 +2,14 @@ import { PropertyData, RequestBodyData, SchemaType } from "../interfaces"
 import { SetStateAction, useState } from "react";
 import Dropdown from "./Dropdown";
 import TextField from "./TextField";
-import TagsField from "./TagsField";
 import CheckBox from "./CheckBox";
-import AutoCompleteDropdown from "./AutoCompleteDropdown";
 import PropertiesManager from "./PropertiesManager";
-function RequestBody() {
+interface Props {
+  requestBodyData: RequestBodyData | null,
+  setRequestBodyData: React.Dispatch<SetStateAction<RequestBodyData | null>>
+}
+function RequestBody({requestBodyData, setRequestBodyData}: Props) {
   const [showComponent, setShowComponent] = useState<boolean>(false)
-  const [requestBodyData, setRequestBodyData] = useState<RequestBodyData | null>(null);
   const [selectedContentType, setSelectedContentType] = useState<string | null>(null);
   const defaultRequestBodyData: RequestBodyData = {
     required: false,
@@ -42,7 +43,6 @@ function RequestBody() {
                 }} />
             </fieldset>
             <button onClick={() => { setShowComponent(false); setRequestBodyData(null); }}>Remove Request Body</button>
-            <pre>{JSON.stringify(requestBodyData, null, 2)}</pre>
             <>
               {selectedContentType !== null ?
                 <>

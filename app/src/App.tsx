@@ -1,58 +1,68 @@
 import Endpoint from "./component/Endpoint"
 import ParameterManager from "./component/ParameterManager";
 import './main.css'
-import { EndpointData, ParameterData } from "./interfaces";
-import { useState } from "react";
+import { EndpointData, ParameterData, RequestBodyData, SchemaType } from "./interfaces";
+import { SetStateAction, useState } from "react";
 import RequestBody from "./component/RequestBody";
 
 function App() {
   const methodOptions = ["GET", "PUT", "POST", "DELETE", "PATCH"];
   const inOptions = ["path", "query"]
-  const [endpointData, setEndpointData] = useState<EndpointData>({path: "",
+  const [endpointData, setEndpointData] = useState<EndpointData>({
+    path: "",
     method: "",
     summary: "",
     description: "",
-    tags: []})
+    tags: []
+  })
+  const [requestBodyData, setRequestBodyData] = useState<RequestBodyData | null>(null);
+
 
   const [parametersData, setParametersData] = useState<ParameterData[]>([]);
   const [endpointErrors, setEndpointErrors] = useState<string[]>([]);
   const [parameterErrors, setParameterErrors] = useState<string[]>([]);
+  const [requestBodyErrors, setRequestBodyErrors] = useState<string[]>([]);
 
 
   return (
     <div className="flex-vertical">
       <Endpoint methodOptions={methodOptions} data={endpointData} onChange={(updated: EndpointData) => setEndpointData(updated)} />
-      <ParameterManager parameters={parametersData} setParameters={setParametersData} inOptions={inOptions}/>
-      <RequestBody/>
+      <ParameterManager parameters={parametersData} setParameters={setParametersData} inOptions={inOptions} />
+      <RequestBody requestBodyData={requestBodyData} setRequestBodyData={setRequestBodyData}  />
       <button onClick={() => validateData()}>Generate</button>
       <p>Endpoint</p>
       <pre>{JSON.stringify(endpointData, null, 2)}</pre>
       <p>Parameters</p>
       <pre>{JSON.stringify(parametersData, null, 2)}</pre>
+      <p>Request Body</p>
+      <pre>{JSON.stringify(requestBodyData, null, 2)}</pre>
 
       <>
-      {renderErrorList("endpoint", endpointErrors)}
-      {renderErrorList("parameters", parameterErrors)}
+        {renderErrorList("endpoint", endpointErrors)}
+        {renderErrorList("parameters", parameterErrors)}
+        {renderErrorList("request body", requestBodyErrors)}
+
 
       </>
 
     </div>
   );
 
-  function validateData () {
+  function validateData() {
     validateEndpoint();
     validateParameters();
+    validateRequestBodyParameters();
   }
 
-  function validateEndpoint () {
+  function validateEndpoint() {
     const errors = [];
 
-    if(!endpointData.path.trim()) {
+    if (!endpointData.path.trim()) {
       errors.push("path can't be empty")
     }
 
     const method = endpointData.method.trim();
-    if(!methodOptions.includes(method.toUpperCase())) {
+    if (!methodOptions.includes(method.toUpperCase())) {
       errors.push(`"${method}" is not a valid method`)
     }
     setEndpointErrors(errors);
@@ -60,53 +70,100 @@ function App() {
 
   function validateParameters() {
 
-    const errors=[];
-    for(let i = 0; i < parametersData.length; i++) {
+    const errors = [];
+    for (let i = 0; i < parametersData.length; i++) {
       const parameter = parametersData[i];
       const pStr = `in parameter ${i + 1}`
-    const inValue = parameter.in.trim();
+      const inValue = parameter.in.trim();
 
-    if(!inOptions.includes(inValue.toLocaleLowerCase())) {
-      errors.push(`"${inValue}" is not a valid in ${pStr}`)
+      if (!inOptions.includes(inValue.toLocaleLowerCase())) {
+        errors.push(`"${inValue}" is not a valid in ${pStr}`)
 
-    }
+      }
 
-    if(!parameter.name.trim()) {
-      errors.push(`name can't be empty ${pStr}`)
-    }
+      if (!parameter.name.trim()) {
+        errors.push(`name can't be empty ${pStr}`)
+      }
 
 
     }
 
     setParameterErrors(errors);
-
-    
-    
   }
 
-    function renderErrorList(name: string, errors: string[]) {
-  if (errors.length === 0) return null;
+  function validateRequestBodyParameters() {
+    const errors: string[] = [];
+    if(!requestBodyData)  { 
+      setRequestBodyErrors(errors);
+      return;
+    }
 
-  return (
-    <>
-      <p style={{ color: "red" }}>
-        The following errors are in the {name}
-      </p>
-      <ul>
-        {errors.map((err, index) => (
-          <li key={index} style={{ color: "red" }}>
-            {err}
-          </li>
-        ))}
-      </ul>
-    </>
-  );
-}
+    if(!requestBodyData["content"]) {
+      setRequestBodyErrors(errors);
+      return;
+    }
+    const content = requestBodyData.content;
+    const schema = content[Object.keys(content)[0]] as unknown as SchemaType;
+
+    switch(schema.type) {
+      case "object":
+        const properties = schema["properties"];
+        const required = schema["required"] ?? null;
+        const additionalProperties = schema["additionalProperties"] ?? null;
+
+        console.log(properties);
+        console.log(required);
+        console.log(additionalProperties);
+        break;
+    }
+
+    return;
+
+    for (let i = 0; i < parametersData.length; i++) {
+      const parameter = parametersData[i];
+      const pStr = `in property ${i + 1}`
+      const inValue = parameter.in.trim();
+
+      if (!inOptions.includes(inValue.toLocaleLowerCase())) {
+        errors.push(`"${inValue}" is not a valid in ${pStr}`)
+
+      }
+
+      if (!parameter.name.trim()) {
+        errors.push(`name can't be empty ${pStr}`)
+      }
 
 
+    }
 
+    setRequestBodyErrors(errors);
+  }
+
+  function renderErrorList(name: string, errors: string[]) {
+    if (errors.length === 0) return null;
+
+    return (
+      <>
+        <p style={{ color: "red" }}>
+          The following errors are in the {name}
+        </p>
+        <ul>
+          {errors.map((err, index) => (
+            <li key={index} style={{ color: "red" }}>
+              {err}
+            </li>
+          ))}
+        </ul>
+      </>
+    );
+  }
 
   
+
+
+
+
+
 }
 
 
