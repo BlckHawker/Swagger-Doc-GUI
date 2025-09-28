@@ -1,51 +1,59 @@
 import Endpoint from "./component/Endpoint"
 import ParameterManager from "./component/ParameterManager";
 import './main.css'
-import { EndpointData, ParameterData, RequestBodyData, SchemaType } from "./interfaces";
+import { EndpointData, ParameterData, RequestBodyData, ResponseData, SchemaType } from "./interfaces";
 import { SetStateAction, useState } from "react";
 import RequestBody from "./component/RequestBody";
+import ResponseManager from "./component/ResponseManager";
 
 function App() {
-  const debug = false;
+  const debug = true;
   const methodOptions = ["GET", "PUT", "POST", "DELETE", "PATCH"];
   const inOptions = ["path", "query"]
-  const [endpointData, setEndpointData] = useState<EndpointData>({
+  const [endpoint, setEndpoint] = useState<EndpointData>({
     path: "",
     method: "",
     summary: "",
     description: "",
     tags: []
   })
-  const [requestBodyData, setRequestBodyData] = useState<RequestBodyData | null>(null);
+  const [parameters, setParameters] = useState<ParameterData[]>([]);
+  const [requestBody, setRequestBody] = useState<RequestBodyData | null>(null);
+  const [responses, setResponses] = useState<ResponseData[]>([]);
 
 
-  const [parametersData, setParametersData] = useState<ParameterData[]>([]);
   const [endpointErrors, setEndpointErrors] = useState<string[]>([]);
   const [parameterErrors, setParameterErrors] = useState<string[]>([]);
   const [requestBodyErrors, setRequestBodyErrors] = useState<string[]>([]);
+  const [responseErrors, setResponseErrors] = useState<string[]>([]);
 
 
   return (
     <div className="flex-vertical">
-      <Endpoint methodOptions={methodOptions} data={endpointData} onChange={(updated: EndpointData) => setEndpointData(updated)} />
-      <ParameterManager parameters={parametersData} setParameters={setParametersData} inOptions={inOptions} />
-      <RequestBody requestBodyData={requestBodyData} setRequestBodyData={setRequestBodyData} />
+      <Endpoint methodOptions={methodOptions} data={endpoint} onChange={(updated: EndpointData) => setEndpoint(updated)} />
+      <ParameterManager parameters={parameters} setParameters={setParameters} inOptions={inOptions} />
+      <RequestBody requestBodyData={requestBody} setRequestBodyData={setRequestBody} />
+      <ResponseManager responses={responses} setResponses={setResponses}/>
       <button onClick={() => validateData()}>Generate</button>
       
       {debug &&
         <>
         <p>Endpoint</p>
-          <pre>{JSON.stringify(endpointData, null, 2)}</pre>
+          <pre>{JSON.stringify(endpoint, null, 2)}</pre>
           <p>Parameters</p>
-          <pre>{JSON.stringify(parametersData, null, 2)}</pre>
+          <pre>{JSON.stringify(parameters, null, 2)}</pre>
           <p>Request Body</p>
-          <pre>{JSON.stringify(requestBodyData, null, 2)}</pre>
+          <pre>{JSON.stringify(requestBody, null, 2)}</pre>
+          <p>Responses</p>
+          <pre>{JSON.stringify(responses, null, 2)}</pre>
         </>
       }
       <>
         {renderErrorList("endpoint", endpointErrors)}
         {renderErrorList("parameters", parameterErrors)}
         {renderErrorList("request body", requestBodyErrors)}
+        {renderErrorList("responses", responseErrors)}
+
       </>
     </div>
   );
@@ -59,11 +67,11 @@ function App() {
   function validateEndpoint() {
     const errors = [];
 
-    if (!endpointData.path.trim()) {
+    if (!endpoint.path.trim()) {
       errors.push("path can't be empty")
     }
 
-    const method = endpointData.method.trim();
+    const method = endpoint.method.trim();
     if (!methodOptions.includes(method.toUpperCase())) {
       errors.push(`"${method}" is not a valid method`)
     }
@@ -73,8 +81,8 @@ function App() {
   function validateParameters() {
 
     const errors = [];
-    for (let i = 0; i < parametersData.length; i++) {
-      const parameter = parametersData[i];
+    for (let i = 0; i < parameters.length; i++) {
+      const parameter = parameters[i];
       const pStr = `in parameter ${i + 1}`
       const inValue = parameter.in.trim();
 
@@ -95,20 +103,20 @@ function App() {
 
   function validateRequestBodyParameters() {
     const errors: string[] = [];
-    console.log(requestBodyData)
-    if (!requestBodyData) {
+    console.log(requestBody)
+    if (!requestBody) {
       console.log("requestBodyData is falsy")
       setRequestBodyErrors(errors);
       return;
     }
 
-    if (!requestBodyData["content"]) {
+    if (!requestBody["content"]) {
       console.log("requestBodyData content is falsy")
 
       setRequestBodyErrors(errors);
       return;
     }
-    const content = requestBodyData.content;
+    const content = requestBody.content;
     const schema = content[Object.keys(content)[0]]!.schema;
 
     switch (schema.type) {

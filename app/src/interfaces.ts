@@ -7,6 +7,11 @@ interface ParameterData {
   example: string;
 }
 
+interface ResponseData {
+  statusCode: number,
+  description: string
+}
+
 type SchemaType =
   | {
       type: "string"
@@ -72,6 +77,7 @@ interface PropertyData {
 }
 
 export type {
+    ResponseData,
     PropertyData,
     RequestBodyData,
     SchemaType,
